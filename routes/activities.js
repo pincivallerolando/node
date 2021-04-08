@@ -10,9 +10,24 @@ router.get('/', async (req, res) => {
     const activities = await Activity.find();
     res.send(activities);
   });
+//return all activities for an idUser
+   router.get('/myactivities/:id', async (req, res) => {
+    const user = await User.findById(req.params.id);
+    console.log(user);
+    const activitiesRef = user.activities;
+    console.log(activitiesRef);
+    let activities= [];
+    for (const activity of activitiesRef) {
+      let act =  await Activity.findById(activity._id);
+      activities.push(act);
+
+    }
+    console.log(activities);
+    res.send(activities);
+  }); 
   
 //create a new activity with desc and status
-router.post('/', auth, async (req, res) => {
+router.post('/myactivities/new', auth, async (req, res) => {
     const { error } = validate(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
   
@@ -33,21 +48,22 @@ router.post('/', auth, async (req, res) => {
   });
 
   //update desc data with the give id
-  router.put('/:id', async (req, res) => {
+  router.put('/myactivities/update/:id', async (req, res) => {
     const { error } = validate(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
   
-    const activity = await Activity.findByIdAndUpdate(req.params.id, { description: req.body.description}, {
+    const activity = await Activity.findByIdAndUpdate(req.params.id, { description: req.body.description, status: req.body.status}, {
       new: true
     });
   
     if (!activity) return res.status(404).send('ID non trovato');
     
+    
     res.send(activity);
   });
   
   //delete activity with the given id
-  router.delete('/:id', auth, async (req, res) => {
+  router.delete('/myactivities/delete/:id', auth, async (req, res) => {
     
     //searching user by id for accessing control to delete operation 
     const user = await User.findById(req.user._id);
@@ -78,11 +94,11 @@ router.post('/', auth, async (req, res) => {
   });
   
   //get single activity with the given id
-  router.get('/:id', async (req, res) => {
+  router.get('/myactivities/single/:id', async (req, res) => {
     const activity = await Activity.findById(req.params.id);
   
     if (!activity) return res.status(404).send('ID non trovato');
-  
+    console.log('single activity:', activity);
     res.send(activity);
   });
   
