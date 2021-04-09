@@ -10,19 +10,23 @@ router.get('/', async (req, res) => {
     const activities = await Activity.find();
     res.send(activities);
   });
+
 //return all activities for an idUser
    router.get('/myactivities/:id', async (req, res) => {
+
     const user = await User.findById(req.params.id);
-    console.log(user);
+
+    //prendo le ref delle activities nel user
     const activitiesRef = user.activities;
-    console.log(activitiesRef);
     let activities= [];
+
+    //per ogni activity di activitiesRef richiedo al db di restituirmi tutta l'activity per poi effettuare il push in un altro array
     for (const activity of activitiesRef) {
       let act =  await Activity.findById(activity._id);
       activities.push(act);
 
     }
-    console.log(activities);
+    //send dell'array con le sole activity dell'user
     res.send(activities);
   }); 
   
@@ -65,7 +69,7 @@ router.post('/myactivities/new', auth, async (req, res) => {
   //delete activity with the given id
   router.delete('/myactivities/delete/:id', auth, async (req, res) => {
     
-    //searching user by id for accessing control to delete operation 
+    //searching user by id for accessing control for delete operation 
     const user = await User.findById(req.user._id);
     //searching activity to check if exist
     const activity = await Activity.findById(req.params.id);
