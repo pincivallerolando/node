@@ -1,12 +1,12 @@
 const winston = require('winston');
 const express = require('express');
-//aggiunto ora
-const path = __dirname+'/views/';
 
+
+
+
+//aggiunta perchè avevo problemi con il CORS in quanto ho usato un "proxy" per la connessione
 const app = express();
 
-//aggiunto ora
-app.use(express.static(path));
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -22,10 +22,9 @@ var allowCrossDomain = function(req, res, next) {
   }
 };
 app.use(allowCrossDomain);
-app.get('/', function (req,res) {
-    res.sendFile(path + "index.html");
-  });
+
   
+
 require('./startup/logging');
 require('./startup/routes')(app);
 require('./startup/db')();

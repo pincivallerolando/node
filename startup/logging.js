@@ -2,6 +2,7 @@ const winston = require("winston");
 require("winston-mongodb");
 require("express-async-errors");
 
+//modulo per il logging delle exception
 module.exports = function(){
     winston.handledException(
         new winston.transports.File({filename: 'uncaughtExcpetion.log'}));
